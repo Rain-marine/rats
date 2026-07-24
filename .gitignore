@@ -1,0 +1,51 @@
+# Data directories
+data/
+rerun_downloads/
+logs/
+totahlab-master/
+Codes/onnx/
+Codes/logs/
+results/
+
+
+# Common data formats
+*.csv
+*.parquet
+*.mat
+*.npy
+*.npz
+*.h5
+*.hdf5
+*.nev
+*.ncs
+*.pkl
+*.pickle
+
+# Model checkpoints
+*.pt
+*.pth
+*.ckpt
+checkpoints/
+
+# Jupyter temporary files
+.ipynb_checkpoints/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Conda and virtual environments
+.env
+.venv/
+venv/
+env/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+
+# System/editor files
+.DS_Store
+.vscode/
+.idea/

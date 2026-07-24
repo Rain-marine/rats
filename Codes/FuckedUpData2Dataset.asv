@@ -1,0 +1,88 @@
+ % Om = 0, HIT = 1, CR = 2, FA = 3
+    addpath('/scratch/work/bahriz1/Thesis/Functions')
+    addpath(genpath('/scratch/work/bahriz1/Thesis/totahlab-master/external/nlx_linux'))
+    addpath('/scratch/work/bahriz1/Thesis/totahlab-master/nelson/Attention Project')
+    cd('/scratch/work/bahriz1/Thesis/rerun_downloads')
+    ratId = '8582';
+    date = '051018';
+    %missingIdx = 52;
+    foldername = [ratId '_' date];
+    cd(foldername);
+    %%
+    gngFile = dir('*.mat');
+    nevFile = dir('*.nev');
+    ncsFile = dir('*.ncs');
+
+    EventsName = nevFile(1).name;
+
+
+    %%
+
+    Times = GetEventsData_linux(EventsName, 0, 'microsec');
+    data = load(gngFile(1).name);
+    offset = Times.CheetahRecordingStart;   
+    correct = data.Correct(:);
+    % get rid of weird trials
+    validMask = correct ~= 4;
+    correct = correct(validMask);
+    stimOn = Times.StimOn(:);
+    stimOn = stimOn(validMask);
+    %keep orig trial # in case needed
+    origTrial = (1:numel(correct))'; 
+    T = table(origTrial, stimOn, correct, 'VariableNames', {'Trial','StimOn','Correct'});
+    respMask = T.Correct == 1 | T.Correct == 3;
+    T.InstruResp = nan(height(T),1);
+    %% For files with miss-matching length run this cell not the next one
+    s = Times.InstruResp(:);
+    t = T.StimOn(respMask);
+    
+    
+    avgDiff = mean(s(1:missingIdx-1) - t(1:missingIdx-1));
+
+    inspector = s(1:missingIdx) - t(1:missingIdx);
+    newResp = [Times.InstruResp(1:missingIdx-1) t(missingIdx)+avgDiff Times.InstruResp(missingIdx:end)]';
+    T.InstruResp(respMask) = newResp(:);
+    %%
+    T.InstruResp(respMask) = Times.InstruResp(:);
+    %%
+    T.StimOn = (T.StimOn - offset) / 1e6;
+    T.InstruResp = (T.InstruResp - offset) / 1e6;
+    T.ReactionTime = T.InstruResp - T.StimOn;
+    %%
+    % Get velocity
+    filename = {};
+    filename{1} = ncsFile(1).name;
+    tic
+    [Vel_time, Vel, ~, ~] = GetVelocityData_linux(filename, 200);
+    toc
+    Vel_time = (Vel_time - offset) / 1e6;
+    EndTrial_Time = 1.75;
+    % create empty columns for peak vel and its time
+    T.PeakVel = nan(height(T), 1);
+    T.PeakVelTime = nan(height(T), 1);
+    % clip the velocity vector to match the trial duration
+    for k = 1:height(T)
+        %fprintf('Doing velocity work. Trial %d\n', T.Trial(k));
+        startIdx = find(Vel_time >= T.StimOn(k), 1, 'first');
+        endIdx = find(Vel_time <= T.StimOn(k) + EndTrial_Time, 1, 'last');
+        if isempty(startIdx) || isempty(endIdx) || endIdx < startIdx
+            continue
+        end
+        T.VelTime{k} = Vel_time(startIdx:endIdx) - T.StimOn(k);
+        T.VelTrace{k} = Vel(startIdx:endIdx);
+        % get max vel for CR
+        if T.Correct(k) == 2
+            [peakVal, localIdx] = max(T.VelTrace{k});
+            T.PeakVel(k) = peakVal;
+            T.PeakVelTime(k) = T.StimOn(k) + T.VelTime{k}(localIdx);
+        end
+    end
+    % add date
+    T.Date = repmat(date, height(T), 1);
+    % add rat ID
+    T.RatID = repmat(str2double(ratId), height(T), 1); 
+    T = movevars(T, {'RatID','Date'}, 'Before', 'StimOn');
+    fileName = sprintf('%s_%s.mat', ratId, date);
+    savePath = fullfile('/scratch/work/bahriz1/Thesis/data/ratId_date', fileName);
+    save(savePath, 'T');
+    

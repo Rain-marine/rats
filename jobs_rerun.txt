@@ -1,0 +1,6 @@
+234|201224|Rat_234_Staircase_201224.mat|Events_TN234_201224_ekg_behavior_Staircase.nev|CSC127_TN234_201224_ekg_behavior_Staircase.ncs
+234|271224|Rat_234_Staircase_271224.mat|Events_TN234_271224_ekg_behavior_Staircase.nev|CSC127_TN234_271224_ekg_behavior_Staircase.ncs
+531|020720|Rat 531 Lev6_IDS 02-Jul-2020 .mat|Events_531_020720.nev|CSC95_531_020720.ncs
+531|030720|Rat 531 Lev5_GNG2Stim 03-Jul-2020.mat|Events_531_030720.nev|CSC95_531_030720.ncs
+9591|220519|Rat 9591 Lev6_EDS 22-May-2019 .mat|Events_9591_220519.nev|CSC95_9591_220519.ncs
+9591|250419|Rat 9591 Lev5_GNG2Stim 25-Apr-2019.mat|Events_9591_250419.nev|CSC95_9591_250419.ncs
