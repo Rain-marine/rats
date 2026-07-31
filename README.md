@@ -26,7 +26,7 @@ This won't have any impact on the results we'll get later but it will noticeably
 
 1. Submit the jobs to Triton:
 ```
-sbatch --array=1-142 download_raw2dataset_batch.sh
+sbatch --array=1-142%10 download_raw2dataset_batch.sh
 ```
 Explanation: Behavior, Events and Velocity file names are respectively stored in data/beh_list.mat, data/nev_list.mat and data/ncs_list.mat.
 I wrote Codes/download_list_creator.ipynb to create the jobs.txt file. Each line in jobs.txt is the required data and file names for one session. Codes/download_single_session.py gets this data as inputs, downloads them from datacloud and runs Codes/rawrec2dataset.m on them. thus in summary, Codes/download_single_session.py downloads ONE sessions data and outputs data/ratId_data/Rat's ID_Session's Date.mat.
