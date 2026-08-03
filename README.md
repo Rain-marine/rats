@@ -17,12 +17,21 @@ rawrec2dataset('8122', '190718', '/scratch/work/bahriz1/Thesis/rerun_downloads/8
 It outputs in the directory data/ratId_date/ one .mat file for the whole session. This .mat file contains a table that looks like this:
 <img width="1472" height="511" alt="image" src="https://github.com/user-attachments/assets/09bfe1c8-4312-4405-823a-ae2f495da8be" />
 
-
+---- IN CASE FUNCTIONS ARE CLONED FROM TOTAHLAB REPO ----
 NOTE: To avoid some files from timing out, go to nelson/Attention Project/GetVelocityData_linux.m, and change line 64 (shown in the picture) to threshold = 0.9*maxVal.
 This won't have any impact on the results we'll get later but it will noticeably make it faster.
 
-<img width="852" height="401" alt="image" src="https://github.com/user-attachments/assets/004a2318-a7ce-4ce5-b47f-61ebdd55c3b4" />
+UPDATE: : in totahlab/nelson/Attention Project/GetVelocityData.m line 15 from
+```
+[Pos,Pos_time] = load_CSC_linux(pwd,'single',1,0,[],filename);
+```
+to
+```
+[Pos,Pos_time] = load_CSC_linux_new2026(pwd,filename);
+```
 
+<img width="852" height="401" alt="image" src="https://github.com/user-attachments/assets/004a2318-a7ce-4ce5-b47f-61ebdd55c3b4" />
+------------------------------------------------------------
 
 1. Submit the jobs to Triton:
 ```
